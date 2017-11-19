@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>etl</name>
+    <name>socioeconomico-transformation</name>
     <description />
     <extended_description />
     <trans_version />
     <trans_type>Normal</trans_type>
+    <trans_status>0</trans_status>
     <directory>/</directory>
     <parameters>
     </parameters>
@@ -427,9 +428,9 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2017/11/15 16:55:09.430</created_date>
+    <created_date>2017/11/19 00:09:32.176</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2017/11/15 16:55:09.430</modified_date>
+    <modified_date>2017/11/19 00:09:32.176</modified_date>
     <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
@@ -449,10 +450,6 @@
     <index_tablespace />
     <attributes>
       <attribute>
-        <code>EXTRA_OPTION_MYSQL.useSSL</code>
-        <attribute>false</attribute>
-      </attribute>
-      <attribute>
         <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
         <attribute>N</attribute>
       </attribute>
@@ -461,16 +458,8 @@
         <attribute>N</attribute>
       </attribute>
       <attribute>
-        <code>INITIAL_POOL_SIZE</code>
-        <attribute>5</attribute>
-      </attribute>
-      <attribute>
         <code>IS_CLUSTERED</code>
         <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>MAXIMUM_POOL_SIZE</code>
-        <attribute>10</attribute>
       </attribute>
       <attribute>
         <code>PORT_NUMBER</code>
@@ -498,7 +487,7 @@
       </attribute>
       <attribute>
         <code>USE_POOLING</code>
-        <attribute>Y</attribute>
+        <attribute>N</attribute>
       </attribute>
     </attributes>
   </connection>
@@ -559,24 +548,24 @@
   </connection>
   <order>
     <hop>
-      <from>Eventos Input</from>
-      <to>Vestibular Output</to>
+      <from>grade_socioeconomico input</from>
+      <to>Extrai Código</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Cursos Input</from>
-      <to>Cursos Output</to>
+      <from>Extrai Código</from>
+      <to>Transforma resposta em texto</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Estabelecimento Input</from>
-      <to>Estabelecimento Output</to>
+      <from>Transforma resposta em texto</from>
+      <to>Salva Dados</to>
       <enabled>Y</enabled>
     </hop>
   </order>
   <step>
-    <name>Eventos Input</name>
-    <type>TableInput</type>
+    <name>Extrai Código</name>
+    <type>ScriptValueMod</type>
     <description />
     <distribute>Y</distribute>
     <custom_distribution />
@@ -585,13 +574,70 @@
       <method>none</method>
       <schema_name />
     </partitioning>
-    <connection>operacional</connection>
-    <sql>select descricao_evento, ano_evento, id_evento from evento</sql>
-    <limit>0</limit>
-    <lookup />
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
+    <compatible>N</compatible>
+    <optimizationLevel>9</optimizationLevel>
+    <jsScripts>
+      <jsScript>
+        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>nivel_instrucao_pai = substr(grade_socioeconomico,20,1);
+nivel_instrucao_mae = substr(grade_socioeconomico,21,1);
+possui_computador = substr(grade_socioeconomico,28,1);
+estado_civil  = substr(grade_socioeconomico,1,1);
+renda_total = substr(grade_socioeconomico,19,1);
+curso_pre_vestibular = substr(grade_socioeconomico,12,1);</jsScript_script>
+      </jsScript>
+    </jsScripts>
+    <fields>
+      <field>
+        <name>nivel_instrucao_pai</name>
+        <rename>nivel_instrucao_pai</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>nivel_instrucao_mae</name>
+        <rename>nivel_instrucao_mae</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>possui_computador</name>
+        <rename>possui_computador</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>estado_civil</name>
+        <rename>estado_civil</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>renda_total</name>
+        <rename>renda_total</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>curso_pre_vestibular</name>
+        <rename>curso_pre_vestibular</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+    </fields>
     <cluster_schema />
     <remotesteps>
       <input>
@@ -600,13 +646,13 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>128</xloc>
-      <yloc>96</yloc>
+      <xloc>256</xloc>
+      <yloc>32</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Vestibular Output</name>
+    <name>Salva Dados</name>
     <type>TableOutput</type>
     <description />
     <distribute>Y</distribute>
@@ -618,7 +664,7 @@
     </partitioning>
     <connection>analitico</connection>
     <schema />
-    <table>dm_vestibular</table>
+    <table>dm_socio_economica</table>
     <commit>1000</commit>
     <truncate>N</truncate>
     <ignore_errors>N</ignore_errors>
@@ -635,16 +681,32 @@
     <return_field />
     <fields>
       <field>
-        <column_name>descricao</column_name>
-        <stream_name>descricao_evento</stream_name>
+        <column_name>grau_instrucao_mae</column_name>
+        <stream_name>nivelInstrucaoMae</stream_name>
       </field>
       <field>
-        <column_name>ano</column_name>
-        <stream_name>ano_evento</stream_name>
+        <column_name>grau_instrucao_pai</column_name>
+        <stream_name>nivelInstrucaoPai</stream_name>
       </field>
       <field>
-        <column_name>id_evento</column_name>
-        <stream_name>id_evento</stream_name>
+        <column_name>possui_computador</column_name>
+        <stream_name>possuiComputador</stream_name>
+      </field>
+      <field>
+        <column_name>estado_civil</column_name>
+        <stream_name>estadoCivil</stream_name>
+      </field>
+      <field>
+        <column_name>renda_total</column_name>
+        <stream_name>rendaTotal</stream_name>
+      </field>
+      <field>
+        <column_name>curso_pre_vestibular</column_name>
+        <stream_name>cursoPreVestibular</stream_name>
+      </field>
+      <field>
+        <column_name>hash</column_name>
+        <stream_name>grade_socioeconomico</stream_name>
       </field>
     </fields>
     <cluster_schema />
@@ -655,13 +717,203 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>384</xloc>
-      <yloc>96</yloc>
+      <xloc>256</xloc>
+      <yloc>176</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Cursos Input</name>
+    <name>Transforma resposta em texto</name>
+    <type>ScriptValueMod</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <compatible>N</compatible>
+    <optimizationLevel>9</optimizationLevel>
+    <jsScripts>
+      <jsScript>
+        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>if(estado_civil == '1'){
+	estadoCivil = 'Solteiro';
+} else if(estado_civil == '2'){
+	estadoCivil = 'Casado';
+} else if(estado_civil == '3'){
+	estadoCivil = 'Viúvo';
+} else if(estado_civil == '4'){
+	estadoCivil = 'Desquitado';
+} else if(estado_civil == '5'){
+	estadoCivil = 'Divorciado';
+} else{
+	estadoCivil = 'Outros';
+}
+
+if(nivel_instrucao_mae == '1'){
+	nivelInstrucaoMae = 'Não alfabetizado';
+} else if( nivel_instrucao_mae == '2'){
+	nivelInstrucaoMae = 'Lê e escreve, mas nunca esteve na escola';
+} else if( nivel_instrucao_mae == '3'){
+	nivelInstrucaoMae = 'Fundamental incompleto';
+} else if( nivel_instrucao_mae == '4'){
+	nivelInstrucaoMae = 'Fundamental completo';
+} else if( nivel_instrucao_mae == '5'){
+	nivelInstrucaoMae = 'Médio incompleto';
+} else if( nivel_instrucao_mae == '6'){
+	nivelInstrucaoMae = 'Médio completo';
+} else if( nivel_instrucao_mae == '7'){
+	nivelInstrucaoMae = 'Superior incompleto';
+} else if( nivel_instrucao_mae == '8'){
+	nivelInstrucaoMae = 'Superior completo';
+} else if( nivel_instrucao_mae == '9'){
+	nivelInstrucaoMae = 'Pós-Graduação';
+} 
+
+if(nivel_instrucao_pai == '1'){
+	nivelInstrucaoPai = 'Não alfabetizado';
+} else if( nivel_instrucao_pai == '2'){
+	nivelInstrucaoPai = 'Lê e escreve, mas nunca esteve na escola';
+} else if( nivel_instrucao_pai == '3'){
+	nivelInstrucaoPai = 'Fundamental incompleto';
+} else if( nivel_instrucao_pai == '4'){
+	nivelInstrucaoPai = 'Fundamental completo';
+} else if( nivel_instrucao_pai == '5'){
+	nivelInstrucaoPai = 'Médio incompleto';
+} else if( nivel_instrucao_pai == '6'){
+	nivelInstrucaoPai = 'Médio completo';
+} else if( nivel_instrucao_pai == '7'){
+	nivelInstrucaoPai = 'Superior incompleto';
+} else if( nivel_instrucao_pai == '8'){
+	nivelInstrucaoPai = 'Superior completo';
+} else if( nivel_instrucao_pai == '9'){
+	nivelInstrucaoPai = 'Pós-Graduação';
+} 
+
+if(possui_computador == '1'){
+	possuiComputador = 'Sim, só para lazer';
+} else if(possui_computador == '2'){
+	possuiComputador = 'Sim, para trabalhos escolares e/ou profissionais';
+} else if(possui_computador == '3'){
+    possuiComputador = 'Sim, no trabalho';
+} else if(possui_computador == '4'){
+	possuiComputador = 'Não';
+}
+
+if(renda_total == '1'){
+	rendaTotal = 'Até 1 salário mín.';
+} else if(renda_total == '2'){
+	rendaTotal= 'Acima de 1 até 3 sal. mín.';
+} else if(renda_total == '3'){
+    rendaTotal = 'Acima de 3 até 5 sal. mín.';
+} else if(renda_total == '4'){
+	rendaTotal = 'Acima de 5 até 7 sal. mín.';
+}  else if(renda_total == '5'){
+	rendaTotal= 'Acima de 7 até 10 sal. mín.';
+} else if(renda_total == '6'){
+    rendaTotal = 'Entre 10 e 20 sal. mín.';
+} else if(renda_total == '7'){
+	rendaTotal = 'Entre 20 e 30 sal. mín.';
+} else if(renda_total == '8'){
+	rendaTotal = 'Acima de 30 sal. mín.';
+}
+
+
+if(curso_pre_vestibular == '1'){
+ 	cursoPreVestibular = 'Não';
+} else if(curso_pre_vestibular == '2'){
+	cursoPreVestibular = 'Sim, por menos de 1 semestre';
+} else if(curso_pre_vestibular == '3'){
+	cursoPreVestibular = 'Sim, por 1 semestre';
+} else if(curso_pre_vestibular == '4'){
+	cursoPreVestibular = 'Sim, por 1 ano';
+} else if(curso_pre_vestibular == '5'){
+	cursoPreVestibular = 'Sim, por mais de 1 ano';
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+</jsScript_script>
+      </jsScript>
+    </jsScripts>
+    <fields>
+      <field>
+        <name>estadoCivil</name>
+        <rename>estadoCivil</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>nivelInstrucaoMae</name>
+        <rename>nivelInstrucaoMae</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>nivelInstrucaoPai</name>
+        <rename>nivelInstrucaoPai</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>possuiComputador</name>
+        <rename>possuiComputador</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>rendaTotal</name>
+        <rename>rendaTotal</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>cursoPreVestibular</name>
+        <rename>cursoPreVestibular</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+    </fields>
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>448</xloc>
+      <yloc>32</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>grade_socioeconomico input</name>
     <type>TableInput</type>
     <description />
     <distribute>Y</distribute>
@@ -672,8 +924,7 @@
       <schema_name />
     </partitioning>
     <connection>operacional</connection>
-    <sql>select nome_curso, nome_area, nome_centro from curso natural join area_curso natural join centro_curso;
-</sql>
+    <sql> SELECT id_evento, grade_socioeconomico FROM candidato;</sql>
     <limit>0</limit>
     <lookup />
     <execute_each_row>N</execute_each_row>
@@ -687,137 +938,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>128</xloc>
-      <yloc>192</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Cursos Output</name>
-    <type>TableOutput</type>
-    <description />
-    <distribute>Y</distribute>
-    <custom_distribution />
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name />
-    </partitioning>
-    <connection>analitico</connection>
-    <schema />
-    <table>dm_curso</table>
-    <commit>1000</commit>
-    <truncate>N</truncate>
-    <ignore_errors>N</ignore_errors>
-    <use_batch>Y</use_batch>
-    <specify_fields>Y</specify_fields>
-    <partitioning_enabled>N</partitioning_enabled>
-    <partitioning_field />
-    <partitioning_daily>N</partitioning_daily>
-    <partitioning_monthly>Y</partitioning_monthly>
-    <tablename_in_field>N</tablename_in_field>
-    <tablename_field />
-    <tablename_in_table>Y</tablename_in_table>
-    <return_keys>N</return_keys>
-    <return_field />
-    <fields>
-      <field>
-        <column_name>nome_curso</column_name>
-        <stream_name>nome_curso</stream_name>
-      </field>
-      <field>
-        <column_name>nome_centro</column_name>
-        <stream_name>nome_centro</stream_name>
-      </field>
-      <field>
-        <column_name>area_curso</column_name>
-        <stream_name>nome_area</stream_name>
-      </field>
-    </fields>
-    <cluster_schema />
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>384</xloc>
-      <yloc>192</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Estabelecimento Input</name>
-    <type>TableInput</type>
-    <description />
-    <distribute>Y</distribute>
-    <custom_distribution />
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name />
-    </partitioning>
-    <connection>operacional</connection>
-    <sql>SELECT &lt;values> FROM &lt;table name> WHERE &lt;conditions></sql>
-    <limit>0</limit>
-    <lookup />
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-    <cluster_schema />
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>128</xloc>
-      <yloc>288</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Estabelecimento Output</name>
-    <type>TableOutput</type>
-    <description />
-    <distribute>Y</distribute>
-    <custom_distribution />
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name />
-    </partitioning>
-    <connection>analitico</connection>
-    <schema />
-    <table />
-    <commit>1000</commit>
-    <truncate>N</truncate>
-    <ignore_errors>N</ignore_errors>
-    <use_batch>Y</use_batch>
-    <specify_fields>N</specify_fields>
-    <partitioning_enabled>N</partitioning_enabled>
-    <partitioning_field />
-    <partitioning_daily>N</partitioning_daily>
-    <partitioning_monthly>Y</partitioning_monthly>
-    <tablename_in_field>N</tablename_in_field>
-    <tablename_field />
-    <tablename_in_table>Y</tablename_in_table>
-    <return_keys>N</return_keys>
-    <return_field />
-    <fields>
-    </fields>
-    <cluster_schema />
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>384</xloc>
-      <yloc>288</yloc>
+      <xloc>80</xloc>
+      <yloc>32</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
