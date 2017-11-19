@@ -651,7 +651,7 @@ join opcao_candidato on opcao_candidato.id_candidato = candidato.id_candidato
  and opcao_candidato.id_opcao in ('1')
 join curso ON (opcao_candidato.codigo_opcao=curso.id_curso AND curso.id_evento=candidato.id_evento)
 join boletim_desempenho  ON (candidato.id_candidato=boletim_desempenho.id_candidato AND boletim_desempenho.id_evento=candidato.id_evento)
-where  candidato.grade_socioeconomico IS NOT NULL;</sql>
+where  candidato.grade_socioeconomico IS NOT NULL and id_curso != 999;</sql>
     <limit>0</limit>
     <lookup />
     <execute_each_row>N</execute_each_row>
