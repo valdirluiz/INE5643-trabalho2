@@ -644,7 +644,7 @@
        grade_socioeconomico,
        acertos_total,
        candidato.classificacao_geral,
-       boletim_desempenho.posicao_1 as posicao 
+       boletim_desempenho.* 
 from candidato candidato
 join opcao_candidato on opcao_candidato.id_candidato = candidato.id_candidato
  and  opcao_candidato.id_evento = candidato.id_evento
@@ -917,7 +917,43 @@ where  candidato.grade_socioeconomico IS NOT NULL and id_curso != 999;</sql>
       </field>
       <field>
         <column_name>posicao</column_name>
-        <stream_name>posicao</stream_name>
+        <stream_name>posicao_1</stream_name>
+      </field>
+      <field>
+        <column_name>acertos_matematica</column_name>
+        <stream_name>acertos_matematica</stream_name>
+      </field>
+      <field>
+        <column_name>acertos_biologia</column_name>
+        <stream_name>acertos_biologia</stream_name>
+      </field>
+      <field>
+        <column_name>acertos_geografia</column_name>
+        <stream_name>acertos_geografia</stream_name>
+      </field>
+      <field>
+        <column_name>acertos_lingua_estrangeira</column_name>
+        <stream_name>acertos_lingua_estrangeira</stream_name>
+      </field>
+      <field>
+        <column_name>acertos_portugues</column_name>
+        <stream_name>acertos_portugues</stream_name>
+      </field>
+      <field>
+        <column_name>nota_redacao</column_name>
+        <stream_name>nota_redacao</stream_name>
+      </field>
+      <field>
+        <column_name>acertos_fisica</column_name>
+        <stream_name>acertos_fisica</stream_name>
+      </field>
+      <field>
+        <column_name>acertos_historia</column_name>
+        <stream_name>acertos_historia</stream_name>
+      </field>
+      <field>
+        <column_name>acertos_quimica</column_name>
+        <stream_name>acertos_quimica</stream_name>
       </field>
     </fields>
     <cluster_schema />
