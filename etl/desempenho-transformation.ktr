@@ -573,6 +573,16 @@
     </hop>
     <hop>
       <from>Candidatos input</from>
+      <to>Trata nulos</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Trata nulos</from>
+      <to>fl_classificado</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>fl_classificado</from>
       <to>Evento lookup</to>
       <enabled>Y</enabled>
     </hop>
@@ -619,7 +629,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>720</xloc>
+      <xloc>832</xloc>
       <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
@@ -644,13 +654,16 @@
        grade_socioeconomico,
        acertos_total,
        candidato.classificacao_geral,
-       boletim_desempenho.* 
+       boletim_desempenho.*,
+       candidato_classificado.ordem_classificacao
 from candidato candidato
 join opcao_candidato on opcao_candidato.id_candidato = candidato.id_candidato
  and  opcao_candidato.id_evento = candidato.id_evento
  and opcao_candidato.id_opcao in ('1')
 join curso ON (opcao_candidato.codigo_opcao=curso.id_curso AND curso.id_evento=candidato.id_evento)
 join boletim_desempenho  ON (candidato.id_candidato=boletim_desempenho.id_candidato AND boletim_desempenho.id_evento=candidato.id_evento)
+left join candidato_classificado on candidato.id_candidato = candidato_classificado.id_candidato
+	and candidato.id_evento = candidato_classificado.id_evento
 where  candidato.grade_socioeconomico IS NOT NULL and id_curso != 999;</sql>
     <limit>0</limit>
     <lookup />
@@ -712,7 +725,7 @@ where  candidato.grade_socioeconomico IS NOT NULL and id_curso != 999;</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>512</xloc>
+      <xloc>624</xloc>
       <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
@@ -759,7 +772,7 @@ where  candidato.grade_socioeconomico IS NOT NULL and id_curso != 999;</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>560</xloc>
+      <xloc>672</xloc>
       <yloc>208</yloc>
       <draw>Y</draw>
     </GUI>
@@ -806,7 +819,7 @@ where  candidato.grade_socioeconomico IS NOT NULL and id_curso != 999;</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>336</xloc>
+      <xloc>448</xloc>
       <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
@@ -853,7 +866,7 @@ where  candidato.grade_socioeconomico IS NOT NULL and id_curso != 999;</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>720</xloc>
+      <xloc>832</xloc>
       <yloc>208</yloc>
       <draw>Y</draw>
     </GUI>
@@ -955,6 +968,14 @@ where  candidato.grade_socioeconomico IS NOT NULL and id_curso != 999;</sql>
         <column_name>acertos_quimica</column_name>
         <stream_name>acertos_quimica</stream_name>
       </field>
+      <field>
+        <column_name>ordem_classificacao</column_name>
+        <stream_name>ordem_classificacao</stream_name>
+      </field>
+      <field>
+        <column_name>fl_classificado</column_name>
+        <stream_name>fl_classificado</stream_name>
+      </field>
     </fields>
     <cluster_schema />
     <remotesteps>
@@ -964,8 +985,103 @@ where  candidato.grade_socioeconomico IS NOT NULL and id_curso != 999;</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>272</xloc>
+      <xloc>384</xloc>
       <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Trata nulos</name>
+    <type>IfNull</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <replaceAllByValue>-1</replaceAllByValue>
+    <replaceAllMask />
+    <selectFields>Y</selectFields>
+    <selectValuesType>N</selectValuesType>
+    <setEmptyStringAll>N</setEmptyStringAll>
+    <valuetypes>
+      </valuetypes>
+    <fields>
+      <field>
+        <name>ordem_classificacao</name>
+        <value>-1</value>
+        <mask />
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>posicao_1</name>
+        <value>-1</value>
+        <mask />
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>176</xloc>
+      <yloc>112</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>fl_classificado</name>
+    <type>ScriptValueMod</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <compatible>N</compatible>
+    <optimizationLevel>9</optimizationLevel>
+    <jsScripts>
+      <jsScript>
+        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>var fl_classificado;
+if(ordem_classificacao!= -1){
+	fl_classificado = 1;
+} else{
+	fl_classificado = 0;
+}
+
+</jsScript_script>
+      </jsScript>
+    </jsScripts>
+    <fields>
+      <field>
+        <name>fl_classificado</name>
+        <rename>fl_classificado</rename>
+        <type>Integer</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+    </fields>
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>320</xloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
